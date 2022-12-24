@@ -4,6 +4,9 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+
 // idle
 // pending
 // resolved
@@ -38,6 +41,7 @@ export class App extends Component {
       if (prevState.searchQuery !== searchQuery) {
         const images = await getImages(page, searchQuery);
         this.setState({ images: [...images.hits], status: 'resolved' });
+        return;
       }
       if (prevState.page !== page) {
         const images = await getImages(page, searchQuery);
@@ -45,6 +49,7 @@ export class App extends Component {
           images: [...prevState.images, ...images.hits],
           status: 'resolved',
         });
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -68,6 +73,7 @@ export class App extends Component {
     const { images, status } = this.state;
     return (
       <>
+        {/* <ToastContainer /> */}
         <Searchbar onSubmit={this.handleSubmit} />
         {images.length > 0 && (
           <ImageGallery
