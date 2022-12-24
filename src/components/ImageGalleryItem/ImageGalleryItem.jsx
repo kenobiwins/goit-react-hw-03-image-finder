@@ -1,8 +1,17 @@
+import PropTypes from 'prop-types';
 import { Modal } from 'components/Modal/Modal';
 import { Component } from 'react';
 import { ImageGalleryItemStyle } from './ImageGalleryItem.styled';
 
 export class ImageGalleryItem extends Component {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    largeURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+    webURL: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+  };
+
   state = {
     largeURL: '',
     isOpen: false,

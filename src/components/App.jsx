@@ -72,7 +72,7 @@ export class App extends Component {
         {images.length > 0 && (
           <ImageGallery
             images={images}
-            isOpen={this.state.isOpen}
+            // isOpen={this.state.isOpen}
             onClick={this.handleClickOnImage}
           />
         )}

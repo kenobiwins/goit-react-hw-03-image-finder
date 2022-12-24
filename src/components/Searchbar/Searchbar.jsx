@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import {
   SearchForm,
@@ -8,6 +9,10 @@ import {
 } from './Searchbar.styled';
 
 export class Searchbar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
     searchQuery: '',
   };
