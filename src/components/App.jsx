@@ -108,10 +108,10 @@ export class App extends Component {
             />
           </div>
         )}
-        {status === 'pending' && <Loader />}
-        {images.length > 0 && status === 'resolved' && (
+        {images.length > 0 && images.length >= 12 && status === 'resolved' && (
           <Button loadMore={this.handleLoadMore} />
         )}
+        {status === 'pending' && <Loader />}
       </>
     );
   }
