@@ -4,6 +4,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { PER_PAGE as paginationLimit } from 'service/API';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -67,7 +68,7 @@ export class App extends Component {
         });
         if (
           images.totalHits === this.state.images.length ||
-          images.hits.length < 12
+          images.hits.length < paginationLimit
         ) {
           throw new Error('You loaded all images');
         }
@@ -108,9 +109,9 @@ export class App extends Component {
             />
           </div>
         )}
-        {images.length > 0 && images.length >= 12 && status === 'resolved' && (
-          <Button loadMore={this.handleLoadMore} />
-        )}
+        {images.length > 0 &&
+          images.length >= paginationLimit &&
+          status === 'resolved' && <Button loadMore={this.handleLoadMore} />}
         {status === 'pending' && <Loader />}
       </>
     );
