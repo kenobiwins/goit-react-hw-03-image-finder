@@ -15,44 +15,66 @@ export class App extends Component {
   state = {
     searchQuery: '',
     images: [],
-    // isOpen: false,
     status: 'idle',
     page: 1,
   };
 
-  async componentDidMount() {
-    const { page, searchQuery } = this.state;
-    try {
-      this.setState({ status: 'pending' });
-      const images = await getImages(page, searchQuery);
-      this.setState({ images: [...images.hits], status: 'resolved' });
-    } catch (error) {
-      console.log(error);
-      this.setState({ status: 'rejected' });
-    }
-  }
+  // async componentDidMount() {
+  //   const { page, searchQuery } = this.state;
+  //   try {
+  //     this.setState({ status: 'pending' });
+  //     const images = await getImages(page, searchQuery);
+  //     this.setState({ images: [...images.hits], status: 'resolved' });
+  //   } catch (error) {
+  //     console.log(error);
+  //     this.setState({ status: 'rejected' });
+  //   }
+  // }
 
   async componentDidUpdate(prevProps, prevState) {
     const { page, searchQuery } = this.state;
+
     try {
       if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
         this.setState({ status: 'pending' });
       }
       if (prevState.searchQuery !== searchQuery) {
+        this.setState({ images: [], page: 1 });
         const images = await getImages(page, searchQuery);
-        this.setState({ images: [...images.hits], status: 'resolved' });
-        return;
+        if (!images.totalHits) {
+          throw new Error('We have nothing for this query');
+        }
+
+        this.setState({
+          images: [
+            ...images.hits.map(({ id, webformatURL, largeImageURL, tags }) => {
+              return { id, webformatURL, largeImageURL, tags };
+            }),
+          ],
+          status: 'resolved',
+        });
       }
       if (prevState.page !== page) {
         const images = await getImages(page, searchQuery);
         this.setState({
-          images: [...prevState.images, ...images.hits],
+          images: [
+            ...prevState.images,
+            ...images.hits.map(({ id, webformatURL, largeImageURL, tags }) => {
+              return { id, webformatURL, largeImageURL, tags };
+            }),
+          ],
           status: 'resolved',
         });
-        return;
+        if (
+          images.totalHits === this.state.images.length ||
+          images.hits.length < 12
+        ) {
+          throw new Error('You loaded all images');
+        }
       }
     } catch (error) {
       console.log(error);
+
       this.setState({ status: 'rejected' });
     }
   }
@@ -76,11 +98,15 @@ export class App extends Component {
         {/* <ToastContainer /> */}
         <Searchbar onSubmit={this.handleSubmit} />
         {images.length > 0 && (
-          <ImageGallery
-            images={images}
-            // isOpen={this.state.isOpen}
-            onClick={this.handleClickOnImage}
-          />
+          <ImageGallery images={images} onClick={this.handleClickOnImage} />
+        )}
+        {images.length === 0 && status === 'rejected' && (
+          <div>
+            <img
+              src="https://media.tenor.com/lndtLWwXZC0AAAAj/%D1%87%D1%82%D0%BE.gif"
+              alt="what?"
+            />
+          </div>
         )}
         {images.length > 0 && status === 'resolved' && (
           <Button loadMore={this.handleLoadMore} />
