@@ -40,7 +40,6 @@ export class App extends Component {
         this.setState({ status: 'pending' });
       }
       if (prevState.searchQuery !== searchQuery) {
-        this.setState({ images: [], page: 1 });
         const images = await getImages(page, searchQuery);
         if (!images.totalHits) {
           throw new Error('We have nothing for this query');
@@ -54,8 +53,9 @@ export class App extends Component {
           ],
           status: 'resolved',
         });
+        return;
       }
-      if (prevState.page !== page) {
+      if (prevState.page !== page && page !== 1) {
         const images = await getImages(page, searchQuery);
         this.setState({
           images: [
@@ -72,6 +72,7 @@ export class App extends Component {
         ) {
           throw new Error('You loaded all images');
         }
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -81,7 +82,7 @@ export class App extends Component {
   }
 
   handleSubmit = async searchQuery => {
-    this.setState({ searchQuery });
+    this.setState({ images: [], page: 1, searchQuery });
   };
 
   handleLoadMore = () => {
