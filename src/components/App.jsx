@@ -82,7 +82,12 @@ export class App extends Component {
   }
 
   handleSubmit = async searchQuery => {
-    this.setState({ images: [], page: 1, searchQuery });
+    this.setState(prevState => {
+      if (prevState.searchQuery === searchQuery) {
+        return;
+      }
+      return { images: [], page: 1, searchQuery };
+    });
   };
 
   handleLoadMore = () => {
