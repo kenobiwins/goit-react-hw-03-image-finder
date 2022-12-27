@@ -37,6 +37,7 @@ export class ImageGalleryItem extends Component {
           <img src={webURL} alt={tags} onClick={this.handleClickOnImage} />
           {isOpen && (
             <Modal
+              // isOpen={isOpen}
               src={largeURL}
               tags={tags}
               toggleModal={this.handleToggleModal}

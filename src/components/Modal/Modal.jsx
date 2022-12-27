@@ -12,8 +12,18 @@ export class Modal extends Component {
     toggleModal: PropTypes.func.isRequired,
   };
 
-  handleClose = ({ target, currentTarget }) => {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleClose);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleClose);
+  }
+  handleClose = ({ target, currentTarget, code }) => {
     if (target === currentTarget) {
+      this.props.toggleModal();
+      return;
+    }
+    if (code === 'Escape') {
       this.props.toggleModal();
       return;
     }
